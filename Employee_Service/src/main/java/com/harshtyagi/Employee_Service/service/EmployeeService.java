@@ -16,4 +16,10 @@ public class EmployeeService {
     public List<Employee> getListOfEmployees(){
         return listOfEmployees;
     }
+
+    public void addEmployeeData(Employee employee1){
+        boolean b = listOfEmployees.add(employee1);
+        if(b == true) System.out.println("New employee added");
+        else System.out.println("Failed to add new employee");
+    }
 }

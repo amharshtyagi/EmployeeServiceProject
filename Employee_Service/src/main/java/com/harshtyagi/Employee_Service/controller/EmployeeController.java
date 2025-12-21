@@ -3,9 +3,7 @@ package com.harshtyagi.Employee_Service.controller;
 import com.harshtyagi.Employee_Service.model.Employee;
 import com.harshtyagi.Employee_Service.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +21,11 @@ public class EmployeeController {
     @GetMapping("/employees")
     public List<Employee> getAllEmployees(){
         return service.getListOfEmployees();
+    }
+
+    @PostMapping("/addEmployee")
+    public Employee addNewEmployee(@RequestBody Employee newEmployee){
+        service.addEmployeeData(newEmployee);
+        return newEmployee;
     }
 }

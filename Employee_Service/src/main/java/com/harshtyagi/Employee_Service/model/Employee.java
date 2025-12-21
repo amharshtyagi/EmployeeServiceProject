@@ -24,9 +24,9 @@ public class Employee {
                 '}';
     }
 
-//    public String getEmployeeName() {
-//        return EmployeeName;
-//    }
+    public String getEmployeeName() {
+        return EmployeeName;
+    }
 
     public void setEmployeeName(String employeeName) {
         EmployeeName = employeeName;
