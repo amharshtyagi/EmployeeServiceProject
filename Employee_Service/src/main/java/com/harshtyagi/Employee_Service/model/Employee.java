@@ -1,7 +1,11 @@
 package com.harshtyagi.Employee_Service.model;
 
 
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.validation.annotation.Validated;
+
 public class Employee {
+    @NotBlank(message="EmployeeName must not be empty.")
     private String EmployeeName;
     private long EmployeeId;
     private String email;

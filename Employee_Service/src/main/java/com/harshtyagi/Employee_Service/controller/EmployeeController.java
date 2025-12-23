@@ -2,6 +2,7 @@ package com.harshtyagi.Employee_Service.controller;
 
 import com.harshtyagi.Employee_Service.model.Employee;
 import com.harshtyagi.Employee_Service.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +25,9 @@ public class EmployeeController {
     }
 
     @PostMapping("/addEmployee")
-    public Employee addNewEmployee(@RequestBody Employee newEmployee){
+    public Employee addNewEmployee(@RequestBody @Valid Employee newEmployee){
         service.addEmployeeData(newEmployee);
+        System.out.println("Inside addNewEmployee Controller method.");
         return newEmployee;
     }
 }
