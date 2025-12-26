@@ -3,12 +3,13 @@ package com.harshtyagi.Employee_Service.controller;
 import com.harshtyagi.Employee_Service.dto.ApiResponse;
 import com.harshtyagi.Employee_Service.model.Employee;
 import com.harshtyagi.Employee_Service.service.EmployeeService;
+import com.harshtyagi.Employee_Service.dto.EmployeeResponseDTO;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,8 +24,19 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> getAllEmployees(){
-        return service.getListOfEmployees();
+    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(){
+        List<EmployeeResponseDTO> responseDTOList = new ArrayList<>();
+        List<Employee> employeeList = new ArrayList<>();
+        employeeList = service.getListOfEmployees();
+        for(Employee employee :employeeList){
+            EmployeeResponseDTO employeeResponseDTO = new EmployeeResponseDTO();
+            employeeResponseDTO.setEmployeeId(employee.getEmployeeId());
+            employeeResponseDTO.setEmployeeName(employee.getEmployeeName());
+            employeeResponseDTO.setEmail(employee.getEmail());
+            employeeResponseDTO.setDepartment(employee.getDepartment());
+            responseDTOList.add(employeeResponseDTO);
+        }
+        return ResponseEntity.ok(responseDTOList);
     }
 
     @PostMapping("/addEmployee")
