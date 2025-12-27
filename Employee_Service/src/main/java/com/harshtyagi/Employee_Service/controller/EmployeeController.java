@@ -24,9 +24,10 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(){
+    public ResponseEntity<ApiResponse> getAllEmployees(){
         List<EmployeeResponseDTO> responseDTOList = new ArrayList<>();
         List<Employee> employeeList = new ArrayList<>();
+        ApiResponse apiResponse = new ApiResponse();
         employeeList = service.getListOfEmployees();
         for(Employee employee :employeeList){
             EmployeeResponseDTO employeeResponseDTO = new EmployeeResponseDTO();
@@ -36,7 +37,11 @@ public class EmployeeController {
             employeeResponseDTO.setDepartment(employee.getDepartment());
             responseDTOList.add(employeeResponseDTO);
         }
-        return ResponseEntity.ok(responseDTOList);
+        apiResponse.setStatus("SUCCESS");
+        apiResponse.setMessage("Employees fetched successfully");
+        apiResponse.setTimestamp(LocalDateTime.now());
+        apiResponse.setData(responseDTOList);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping("/addEmployee")
