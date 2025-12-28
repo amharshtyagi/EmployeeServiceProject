@@ -7,15 +7,19 @@ import org.springframework.validation.annotation.Validated;
 public class Employee {
     @NotBlank(message="EmployeeName must not be empty.")
     private String EmployeeName;
-    private long EmployeeId;
+    private int EmployeeId;
     private String email;
     private String department;
 
-    public Employee(String employeeName, long employeeId, String email, String department) {
+    public Employee(String employeeName, int employeeId, String email, String department) {
         EmployeeName = employeeName;
         EmployeeId = employeeId;
         this.email = email;
         this.department = department;
+    }
+
+    public Employee() {
+
     }
 
     @Override
@@ -40,7 +44,7 @@ public class Employee {
         return EmployeeId;
     }
 
-    public void setEmployeeId(long employeeId) {
+    public void setEmployeeId(int employeeId) {
         EmployeeId = employeeId;
     }
 

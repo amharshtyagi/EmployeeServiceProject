@@ -55,4 +55,18 @@ public class EmployeeController {
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.ok(response);
     }
+
+    //getById
+    @GetMapping("employee/{id}")
+    public ResponseEntity<ApiResponse> getEmpById(@PathVariable int id){
+        Employee employee = new Employee();
+        employee=service.findbyId(id);
+        ApiResponse response = new ApiResponse();
+
+        response.setStatus("SUCCESS");
+        response.setMessage("Employee found successfully");
+        response.setTimestamp(LocalDateTime.now());
+        response.setData(employee);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -1,5 +1,6 @@
 package com.harshtyagi.Employee_Service.service;
 
+import com.harshtyagi.Employee_Service.exception.EmployeeNotFoundException;
 import com.harshtyagi.Employee_Service.model.Employee;
 
 import java.util.ArrayList;
@@ -21,5 +22,13 @@ public class EmployeeService {
         boolean b = listOfEmployees.add(employee1);
         if(b == true) System.out.println("New employee added");
         else System.out.println("Failed to add new employee");
+    }
+
+    public Employee findbyId(int id) {
+        for(Employee employee: listOfEmployees){
+            if(employee.getEmployeeId()==id)
+                return employee;
+        }
+        throw new EmployeeNotFoundException("Employee with given Id not found");
     }
 }
