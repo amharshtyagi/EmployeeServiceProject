@@ -34,6 +34,7 @@ public class GlobalExceptionHandler {
         response.setStatus("FAILURE");
         response.setMessage(message);
         response.setTimestamp(LocalDateTime.now());
+        response.setData(null);
         //return ResponseEntity.badRequest().body(response); //This returns 400 which is acceptable
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); //This returns 404, more mature response.
     }
