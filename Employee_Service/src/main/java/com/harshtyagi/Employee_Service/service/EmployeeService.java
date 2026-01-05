@@ -2,10 +2,11 @@ package com.harshtyagi.Employee_Service.service;
 
 import com.harshtyagi.Employee_Service.exception.EmployeeNotFoundException;
 import com.harshtyagi.Employee_Service.model.Employee;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class EmployeeService {
     List<Employee> listOfEmployees = new ArrayList<>();
     public EmployeeService() {

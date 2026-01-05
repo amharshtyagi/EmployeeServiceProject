@@ -5,6 +5,7 @@ import com.harshtyagi.Employee_Service.model.Employee;
 import com.harshtyagi.Employee_Service.service.EmployeeService;
 import com.harshtyagi.Employee_Service.dto.EmployeeResponseDTO;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,22 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/employeeService")
+@RequestMapping("/employees")
 public class EmployeeController {
 
-    EmployeeService service = new EmployeeService();
+    private final EmployeeService service;
 
-    @GetMapping("/hello")
-    public String hello(){
-        return "Hello Employee";
+    public EmployeeController(EmployeeService service){
+        this.service = service;
     }
 
-    @GetMapping("/employees")
+    @GetMapping()
     public ResponseEntity<ApiResponse> getAllEmployees(){
         List<EmployeeResponseDTO> responseDTOList = new ArrayList<>();
-        List<Employee> employeeList = new ArrayList<>();
+        List<Employee> employeeList = service.getListOfEmployees();
         ApiResponse apiResponse = new ApiResponse();
-        employeeList = service.getListOfEmployees();
+        //Manual Mapping of Entitiy data with EmployeeResponseDTO
         for(Employee employee :employeeList){
             EmployeeResponseDTO employeeResponseDTO = new EmployeeResponseDTO();
             employeeResponseDTO.setEmployeeId(employee.getEmployeeId());
@@ -44,7 +44,7 @@ public class EmployeeController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PostMapping("/addEmployee")
+    @PostMapping()
     public ResponseEntity<ApiResponse> addNewEmployee(@RequestBody @Valid Employee newEmployee){
         service.addEmployeeData(newEmployee);
 
@@ -53,20 +53,26 @@ public class EmployeeController {
         response.setStatus("SUCCESS");
         response.setMessage("Employee created successfully");
         response.setTimestamp(LocalDateTime.now());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //getById
-    @GetMapping("employee/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getEmpById(@PathVariable int id){
-        Employee employee = new Employee();
-        employee=service.findbyId(id);
+        Employee employee =service.findbyId(id);
         ApiResponse response = new ApiResponse();
+
+        //Manual Mapping of Entitiy data with EmployeeResponseDTO dto to avoid returning entity data directly
+        EmployeeResponseDTO dto = new EmployeeResponseDTO();
+        dto.setEmployeeId(employee.getEmployeeId());
+        dto.setEmployeeName(employee.getEmployeeName());
+        dto.setEmail(employee.getEmail());
+        dto.setDepartment(employee.getDepartment());
 
         response.setStatus("SUCCESS");
         response.setMessage("Employee found successfully");
         response.setTimestamp(LocalDateTime.now());
-        response.setData(employee);
+        response.setData(dto);
         return ResponseEntity.ok(response);
     }
 }
