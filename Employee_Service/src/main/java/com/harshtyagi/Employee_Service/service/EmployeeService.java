@@ -25,7 +25,7 @@ public class EmployeeService {
         else System.out.println("Failed to add new employee");
     }
 
-    public Employee findbyId(int id) {
+    public Employee getEmployeeById(long id) {
         for(Employee employee: listOfEmployees){
             if(employee.getEmployeeId()==id)
                 return employee;

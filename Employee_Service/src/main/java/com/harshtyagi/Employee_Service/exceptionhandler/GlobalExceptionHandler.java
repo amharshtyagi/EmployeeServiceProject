@@ -8,21 +8,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidationException(MethodArgumentNotValidException exception){
+        //String message = exception.getBindingResult().getFieldError().getDefaultMessage();
 
-        String message = exception.getBindingResult().getFieldError().getDefaultMessage();
+        Map<String,String> errors = new HashMap<>();
+        exception.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(),error.getDefaultMessage()));
 
         ApiResponse response = new ApiResponse();
-        response.setStatus("ERROR");
-        response.setMessage(message);
+        response.setStatus("FAILURE");
+        response.setMessage("Validation failed");
         response.setTimestamp(LocalDateTime.now());
+        response.setData(errors);
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -37,5 +44,16 @@ public class GlobalExceptionHandler {
         response.setData(null);
         //return ResponseEntity.badRequest().body(response); //This returns 400 which is acceptable
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); //This returns 404, more mature response.
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse> handleGenericException(Exception exception){
+
+        ApiResponse response = new ApiResponse();
+        response.setStatus("FAILURE");
+        response.setMessage("Internal server error");
+        response.setTimestamp(LocalDateTime.now());
+        response.setData(null);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
