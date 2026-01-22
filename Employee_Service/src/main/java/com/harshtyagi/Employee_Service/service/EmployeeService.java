@@ -1,7 +1,7 @@
 package com.harshtyagi.Employee_Service.service;
 
 import com.harshtyagi.Employee_Service.exception.EmployeeNotFoundException;
-import com.harshtyagi.Employee_Service.model.Employee;
+import com.harshtyagi.Employee_Service.entity.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,14 +15,15 @@ public class EmployeeService {
         listOfEmployees.add(new Employee("Kshitiz",202,"KS@comp.com","IT"));
     }
 
-    public List<Employee> getListOfEmployees(){
+    public List<Employee> getAllEmployees(){
         return listOfEmployees;
     }
 
-    public void addEmployeeData(Employee employee1){
+    public Employee addEmployeeData(Employee employee1){
         boolean b = listOfEmployees.add(employee1);
         if(b == true) System.out.println("New employee added");
         else System.out.println("Failed to add new employee");
+        return employee1;
     }
 
     public Employee getEmployeeById(long id) {

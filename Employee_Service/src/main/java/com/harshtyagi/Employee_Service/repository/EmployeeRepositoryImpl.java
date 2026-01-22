@@ -1,6 +1,6 @@
 package com.harshtyagi.Employee_Service.repository;
 
-import com.harshtyagi.Employee_Service.model.Employee;
+import com.harshtyagi.Employee_Service.entity.Employee;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

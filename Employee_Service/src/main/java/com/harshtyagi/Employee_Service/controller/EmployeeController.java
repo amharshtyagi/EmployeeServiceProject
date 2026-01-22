@@ -1,9 +1,11 @@
 package com.harshtyagi.Employee_Service.controller;
 
-import com.harshtyagi.Employee_Service.dto.ApiResponse;
-import com.harshtyagi.Employee_Service.model.Employee;
+import com.harshtyagi.Employee_Service.dto.request.CreateEmployeeRequestDTO;
+import com.harshtyagi.Employee_Service.dto.response.ApiResponse;
+import com.harshtyagi.Employee_Service.entity.Employee;
+import com.harshtyagi.Employee_Service.mapper.EmployeeMapper;
 import com.harshtyagi.Employee_Service.service.EmployeeService;
-import com.harshtyagi.Employee_Service.dto.EmployeeResponseDTO;
+import com.harshtyagi.Employee_Service.dto.response.EmployeeResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,62 +19,73 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
+    //For Constructor based DI
     private final EmployeeService service;
+    private final EmployeeMapper mapper;
 
-    public EmployeeController(EmployeeService service){
+    public EmployeeController(EmployeeService service, EmployeeMapper mapper){
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse> getAllEmployees(){
+    public ResponseEntity<ApiResponse<List<EmployeeResponseDTO>>> getAllEmployees(){
+        /*
+        * Service layer interacts with entity
+        * Api Response uses dto
+        * that's why we map entity and dto using mapper class.
+        * */
+        List<Employee> employeeList = service.getAllEmployees();
+
         List<EmployeeResponseDTO> responseDTOList = new ArrayList<>();
-        List<Employee> employeeList = service.getListOfEmployees();
-        ApiResponse apiResponse = new ApiResponse();
-        //Manual Mapping of Entitiy data with EmployeeResponseDTO
+
+        //Mapping of EmployeeResponseDTO with entity
         for(Employee employee :employeeList){
-            EmployeeResponseDTO employeeResponseDTO = new EmployeeResponseDTO();
-            employeeResponseDTO.setEmployeeId(employee.getEmployeeId());
-            employeeResponseDTO.setEmployeeName(employee.getEmployeeName());
-            employeeResponseDTO.setEmail(employee.getEmail());
-            employeeResponseDTO.setDepartment(employee.getDepartment());
-            responseDTOList.add(employeeResponseDTO);
+            EmployeeResponseDTO dto = mapper.toResponseDTO(employee);
+            responseDTOList.add(dto);
         }
-        apiResponse.setStatus("SUCCESS");
-        apiResponse.setMessage("Employees fetched successfully");
-        apiResponse.setTimestamp(LocalDateTime.now());
-        apiResponse.setData(responseDTOList);
+
+        ApiResponse<List<EmployeeResponseDTO>> apiResponse =  ApiResponse.<List<EmployeeResponseDTO>>builder()
+                .status("SUCCESS")
+                .message("Employees fetched successfully")
+                .timeStamp(LocalDateTime.now())
+                .data(responseDTOList)
+                .build();
         return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse> addNewEmployee(@RequestBody @Valid Employee newEmployee){
-        service.addEmployeeData(newEmployee);
-
-        ApiResponse response = new ApiResponse();
-
-        response.setStatus("SUCCESS");
-        response.setMessage("Employee created successfully");
-        response.setTimestamp(LocalDateTime.now());
+    public ResponseEntity<ApiResponse<EmployeeResponseDTO>> addNewEmployee(@RequestBody @Valid CreateEmployeeRequestDTO newEmployee){
+        //RequestDto to entity
+        Employee employee = mapper.toEntity(newEmployee);
+        //Save employee
+        Employee savedEmployee = service.addEmployeeData(employee);
+        //Entity to responseDto
+        EmployeeResponseDTO responseDTO = mapper.toResponseDTO(savedEmployee);
+        //Build API Response
+        ApiResponse<EmployeeResponseDTO> response = ApiResponse.<EmployeeResponseDTO>builder()
+                .status("SUCCESS")
+                .message("Employee created successfully")
+                .timeStamp(LocalDateTime.now())
+                .data(responseDTO)
+                .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //getById
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> getEmpById(@PathVariable int id){
-        Employee employee =service.findbyId(id);
-        ApiResponse response = new ApiResponse();
+    public ResponseEntity<ApiResponse<EmployeeResponseDTO>> getEmpById(@PathVariable long id){
+        Employee employee =service.getEmployeeById(id);
 
-        //Manual Mapping of Entitiy data with EmployeeResponseDTO dto to avoid returning entity data directly
-        EmployeeResponseDTO dto = new EmployeeResponseDTO();
-        dto.setEmployeeId(employee.getEmployeeId());
-        dto.setEmployeeName(employee.getEmployeeName());
-        dto.setEmail(employee.getEmail());
-        dto.setDepartment(employee.getDepartment());
+        //Mapping to convert entity(service) -> DTO(API Response)
+        EmployeeResponseDTO dto = mapper.toResponseDTO(employee);
 
-        response.setStatus("SUCCESS");
-        response.setMessage("Employee found successfully");
-        response.setTimestamp(LocalDateTime.now());
-        response.setData(dto);
+        ApiResponse<EmployeeResponseDTO> response = ApiResponse.<EmployeeResponseDTO>builder()
+                .status("SUCCESS")
+                .message("Employee found successfully")
+                .timeStamp(LocalDateTime.now())
+                .data(dto)
+                .build();
         return ResponseEntity.ok(response);
     }
 }

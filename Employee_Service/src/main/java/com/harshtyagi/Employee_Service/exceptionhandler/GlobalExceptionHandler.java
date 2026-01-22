@@ -1,12 +1,10 @@
 package com.harshtyagi.Employee_Service.exceptionhandler;
 
-import com.harshtyagi.Employee_Service.dto.ApiResponse;
+import com.harshtyagi.Employee_Service.dto.response.ApiResponse;
 import com.harshtyagi.Employee_Service.exception.EmployeeNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,14 +16,14 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse> handleValidationException(MethodArgumentNotValidException exception){
+    public ResponseEntity<ApiResponse<Map<String,String>>> handleValidationException(MethodArgumentNotValidException exception){
         //String message = exception.getBindingResult().getFieldError().getDefaultMessage();
 
         Map<String,String> errors = new HashMap<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(),error.getDefaultMessage()));
 
-        ApiResponse response = new ApiResponse();
+        ApiResponse<Map<String,String>> response = new ApiResponse<>();
         response.setStatus("FAILURE");
         response.setMessage("Validation failed");
         response.setTimestamp(LocalDateTime.now());
@@ -34,10 +32,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmployeeNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleEmployeeNotFoundException(EmployeeNotFoundException exception){
+    public ResponseEntity<ApiResponse<Void>> handleEmployeeNotFoundException(EmployeeNotFoundException exception){
         String message = exception.getMessage();
 
-        ApiResponse response = new ApiResponse();
+        ApiResponse<Void> response = new ApiResponse<>();
         response.setStatus("FAILURE");
         response.setMessage(message);
         response.setTimestamp(LocalDateTime.now());
@@ -47,9 +45,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleGenericException(Exception exception){
+    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception exception){
 
-        ApiResponse response = new ApiResponse();
+        ApiResponse<Void> response = new ApiResponse<>();
         response.setStatus("FAILURE");
         response.setMessage("Internal server error");
         response.setTimestamp(LocalDateTime.now());
