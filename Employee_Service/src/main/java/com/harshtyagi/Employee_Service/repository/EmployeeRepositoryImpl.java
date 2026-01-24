@@ -12,9 +12,24 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     private static final List<Employee> employeeDB = new ArrayList<>();
 
     static {
-        employeeDB.add(new Employee("Harsh", 200, "harsh@comp.com", "IT"));
-        employeeDB.add(new Employee("Aditya", 201, "adi@comp.com", "IT"));
-        employeeDB.add(new Employee("Kshitiz", 202, "ks@comp.com", "IT"));
+        employeeDB.add(Employee.builder()
+                .employeeName("Harsh")
+                .employeeId(200)
+                .email("harsh@comp.com")
+                .department("IT")
+                .build());
+        employeeDB.add(Employee.builder()
+                .employeeName("Aditya")
+                .employeeId(201)
+                .email("adi@comp.com")
+                .department("IT")
+                .build());
+        employeeDB.add(Employee.builder()
+                .employeeName("Kshitiz")
+                .employeeId(202)
+                .email("ks@comp.com")
+                .department("IT")
+                .build());
     }
 
     @Override

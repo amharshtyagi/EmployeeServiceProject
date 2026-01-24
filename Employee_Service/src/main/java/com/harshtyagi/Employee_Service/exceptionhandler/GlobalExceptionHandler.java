@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
         ApiResponse<Map<String,String>> response = new ApiResponse<>();
         response.setStatus("FAILURE");
         response.setMessage("Validation failed");
-        response.setTimestamp(LocalDateTime.now());
+        response.setTimeStamp(LocalDateTime.now());
         response.setData(errors);
         return ResponseEntity.badRequest().body(response);
     }
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         ApiResponse<Void> response = new ApiResponse<>();
         response.setStatus("FAILURE");
         response.setMessage(message);
-        response.setTimestamp(LocalDateTime.now());
+        response.setTimeStamp(LocalDateTime.now());
         response.setData(null);
         //return ResponseEntity.badRequest().body(response); //This returns 400 which is acceptable
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); //This returns 404, more mature response.
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
         ApiResponse<Void> response = new ApiResponse<>();
         response.setStatus("FAILURE");
         response.setMessage("Internal server error");
-        response.setTimestamp(LocalDateTime.now());
+        response.setTimeStamp(LocalDateTime.now());
         response.setData(null);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }

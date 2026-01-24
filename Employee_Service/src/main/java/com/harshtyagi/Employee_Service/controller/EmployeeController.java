@@ -7,6 +7,7 @@ import com.harshtyagi.Employee_Service.mapper.EmployeeMapper;
 import com.harshtyagi.Employee_Service.service.EmployeeService;
 import com.harshtyagi.Employee_Service.dto.response.EmployeeResponseDTO;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
